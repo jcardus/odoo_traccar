@@ -63,27 +63,6 @@
             </field>
         </record>
 
-        <record id="view_my_model_map" model="ir.ui.view">
-            <field name="model">maintenance.equipment</field>
-            <field name="arch" type="xml">
-            <leaflet_map
-                    field_latitude="FIELD_LATITUDE"
-                    field_longitude="FIELD_LONGITUDE"
-                    field_title="FIELD_TITLE"
-                    field_address="FIELD_ADDRESS"
-                    field_marker_icon_image="FIELD_MARKER_ICON_IMAGE"
-            >
-                <field name="__last_update"/>
-                <field name="FIELD_LATITUDE"/>
-                <field name="FIELD_LONGITUDE"/>
-                <field name="FIELD_TITLE"/>
-                <field name="FIELD_ADDRESS"/>
-            </leaflet_map>
-        </field>
-
-        <record id="frotaweb.action_my_model" model="ir.actions.act_window">
-            <field name="view_mode">tree,form,leaflet_map</field>
-        </record>
     </data>
 
 
