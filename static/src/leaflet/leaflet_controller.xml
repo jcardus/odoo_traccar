@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <template xml:space="preserve">
 
-    <t t-name="leaflet.LeafletView" owl="1">
+    <t t-name="odoo_traccar.LeafletView" owl="1">
 
         <div t-ref="root" t-att-class="props.className">
             <Layout display="props.display">

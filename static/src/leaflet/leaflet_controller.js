@@ -95,7 +95,7 @@ export class LeafletController extends Component {
 
 }
 
-LeafletController.template = "leaflet.LeafletView";
+LeafletController.template = "odoo_traccar.LeafletView";
 
 LeafletController.components = {
     Layout,

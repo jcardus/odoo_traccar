@@ -1,15 +1,15 @@
 <templates xml:space="preserve">
-    <t t-name="leaflet.LeafletRenderer" owl="1">
+    <t t-name="odoo_traccar.LeafletRenderer" owl="1">
 
         <div class="wrapper h-100">
             <aside id="sidebar">
                 <div class="d-flex">
-                    
+
                     <button class="toggle-btn" type="button" t-on-click="sidebarExpand">
                         <i class="fa fa-th-large"></i>
                     </button>
                     <div class="sidebar-logo">
-                        <span t-out="title"/> 
+                        <span t-out="title"/>
                     </div>
                 </div>
 
@@ -26,14 +26,14 @@
                                 </t>
 
                                 <span t-out="record.data.name"/>
-                            </a>    
+                            </a>
                         </li>
                     </t>
                 </ul>
             </aside>
             <div class="main p-3">
                 <div t-ref="map"  style="height: 95vh;"/>
-            </div>            
+            </div>
         </div>
     </t>
 </templates>

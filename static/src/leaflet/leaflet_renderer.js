@@ -15,7 +15,7 @@ import { Widget } from "@web/views/widgets/widget";
 import { loadJS, loadCSS } from "@web/core/assets"
 
 export class LeafletRenderer extends Component {
-    setup() {      
+    setup() {
         this.uiService = useService("ui");
         this.leafletRef = useRef("leaflet");
 
@@ -25,7 +25,7 @@ export class LeafletRenderer extends Component {
         this.latitude = latitude;
         this.longitude = longitude;
         this.center = center;
-        this.center_lat = center? center.split(",")[0]: 29.942756347393566;        
+        this.center_lat = center? center.split(",")[0]: 29.942756347393566;
         this.center_long = center?center.split(",")[1]: -95.39379227947576;
         this.zoom = zoom? zoom:10;
         this.title = title?title:"Contacts";
@@ -77,7 +77,7 @@ export class LeafletRenderer extends Component {
             html += `<button id="leafletMapPopupOpenBtn" data-res-id='${record.id}' class='btn btn-primary'>Open</button>`
 
             marker.bindPopup(html).openPopup();
-            
+
         }
     }
 
@@ -97,7 +97,7 @@ export class LeafletRenderer extends Component {
         if (record.data[this.latitude] && record.data[this.longitude]) {
             this.map.setView([record.data[this.latitude], record.data[this.longitude]], 14)
         }
-    }    
+    }
 
     getRecords() {
         if (this.map) {
@@ -116,7 +116,7 @@ export class LeafletRenderer extends Component {
     }
 
 }
-LeafletRenderer.template = "leaflet.LeafletRenderer";
+LeafletRenderer.template = "odoo_traccar.LeafletRenderer";
 
 LeafletRenderer.components = { Field, Pager, Widget, ViewScaleSelector };
 
