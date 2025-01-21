@@ -72,7 +72,7 @@
                     <field name="name"/>
                     <field name="partner_id" options="{'color': 'color'}"/>
                     <field name="latitude"/>
-                    <field name="location_longitude"/>
+                    <field name="longitude"/>
                 </leaflet>
             </field>
         </record>
