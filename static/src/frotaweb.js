@@ -5,16 +5,16 @@ import { registry } from "@web/core/registry";
 import { rpc } from "@web/core/network/rpc";
 
 
-class Frotaweb extends Component {
+class OdooTraccar extends Component {
     static template = "frotaweb.dashboard";
 
     setup() {
         this.state = useState({iframeSrc: ""});
         onWillStart(async () => {
-            const token = await rpc('/frotaweb/token')
+            const token = await rpc('/odoo_traccar/token')
             this.state.iframeSrc = `https://dash.frotaweb.com/traccar?token=${token}`;
         });
     }
 }
 
-registry.category("actions").add("frotaweb.dashboard", Frotaweb);
+registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);

@@ -1,9 +1,9 @@
 {
-    'name': 'frotaweb',
+    'name': 'odoo_traccar',
     'version': '0.1',
     'summary': 'Main module',
     'depends': [
-        'account', 'portal', 'auth_oauth', 'auth_oauth_autologin', 'maintenance'
+        'account', 'portal', 'auth_oauth', 'maintenance'
     ],
     'auto_install': [],
     'application': True,
@@ -15,7 +15,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'frotaweb/static/src/**/*',
+            'odoo_traccar/static/src/**/*',
         ],
     },
 }

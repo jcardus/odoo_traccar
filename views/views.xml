@@ -1,8 +1,8 @@
 <odoo>
     <data>
-        <record model="ir.actions.client" id="frotaweb.dashboard">
+        <record model="ir.actions.client" id="odoo_traccar.dashboard">
             <field name="name">Frotaweb Dashboard</field>
-            <field name="tag">frotaweb.dashboard</field>
+            <field name="tag">odoo_traccar.dashboard</field>
         </record>
         <!-- Define the URL action -->
         <record id="frotaweb_dashboard_action" model="ir.actions.act_url">
@@ -12,7 +12,7 @@
         </record>
 
         <!-- Define the root menu -->
-        <menuitem name="Frotaweb" id="frotaweb.menu_root" groups="base.group_user" action="frotaweb.dashboard" />
+        <menuitem name="Frotaweb" id="frotaweb.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
 
         <!-- Define the second-level menu -->
         <menuitem name="Plataforma" id="frotaweb.dashboard_menu" parent="frotaweb.menu_root" action="frotaweb_dashboard_action" sequence="1"/>
@@ -62,13 +62,14 @@
                 </xpath>
             </field>
         </record>
-        <record id="my_beautiful_view" model="ir.ui.view">
+
+        <!--record id="my_beautiful_view" model="ir.ui.view">
             <field name="name">my_view</field>
             <field name="model">maintenance.equipment</field>
             <field name="arch" type="xml">
                 <leaflet />
             </field>
-        </record>
+        </record-->
     </data>
 
 

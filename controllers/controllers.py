@@ -31,8 +31,8 @@ class CustomAuthLogout(http.Controller):
         return redirect(auth0_logout_url, 303)
 
 
-class Frotaweb(http.Controller):
-    @http.route('/frotaweb/token', type='json', auth='user')
+class Odootraccar(http.Controller):
+    @http.route('/odoo_traccar/token', type='json', auth='user')
     def get_url(self):
         return request.env.user.traccar_token
 
