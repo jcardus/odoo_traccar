@@ -1,0 +1,39 @@
+<templates xml:space="preserve">
+    <t t-name="leaflet.LeafletRenderer" owl="1">
+
+        <div class="wrapper h-100">
+            <aside id="sidebar">
+                <div class="d-flex">
+                    
+                    <button class="toggle-btn" type="button" t-on-click="sidebarExpand">
+                        <i class="fa fa-th-large"></i>
+                    </button>
+                    <div class="sidebar-logo">
+                        <span t-out="title"/> 
+                    </div>
+                </div>
+
+                <t t-set="list" t-value="getRecords()" />
+
+                <ul class="sidebar-nav overflow-hidden overflow-y-auto">
+                    <t t-foreach="list" t-as="record" t-key="record.id">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link" t-on-click="() => this.setMapView(record)">
+                                <t t-set="iniciales" t-value="record.data.name.split(' ')"/>
+
+                                <t t-if="iniciales.length >= 2">
+                                    <a href="#" t-out="iniciales[0][0]+iniciales[1][0]" data-bs-placement="top" t-att-data-tooltip="record.data.name"/>
+                                </t>
+
+                                <span t-out="record.data.name"/>
+                            </a>    
+                        </li>
+                    </t>
+                </ul>
+            </aside>
+            <div class="main p-3">
+                <div t-ref="map"  style="height: 95vh;"/>
+            </div>            
+        </div>
+    </t>
+</templates>

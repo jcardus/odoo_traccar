@@ -62,7 +62,13 @@
                 </xpath>
             </field>
         </record>
-
+        <record id="my_beautiful_view" model="ir.ui.view">
+            <field name="name">my_view</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="arch" type="xml">
+                <leaflet />
+            </field>
+        </record>
     </data>
 
 
