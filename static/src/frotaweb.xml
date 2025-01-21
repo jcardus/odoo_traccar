@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="frotaweb.dashboard">
+        <iframe t-att-src="state.iframeSrc" style="width: 100%; height: 100%"></iframe>
+    </t>
+</templates>

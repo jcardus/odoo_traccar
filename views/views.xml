@@ -1,0 +1,91 @@
+<odoo>
+    <data>
+        <record model="ir.actions.client" id="frotaweb.dashboard">
+            <field name="name">Frotaweb Dashboard</field>
+            <field name="tag">frotaweb.dashboard</field>
+        </record>
+        <!-- Define the URL action -->
+        <record id="frotaweb_dashboard_action" model="ir.actions.act_url">
+            <field name="name">Plataforma</field>
+            <field name="url">https://dash.frotaweb.com/api/session/openid/auth</field>
+            <field name="target">new</field> <!-- Opens in a new tab -->
+        </record>
+
+        <!-- Define the root menu -->
+        <menuitem name="Frotaweb" id="frotaweb.menu_root" groups="base.group_user" action="frotaweb.dashboard" />
+
+        <!-- Define the second-level menu -->
+        <menuitem name="Plataforma" id="frotaweb.dashboard_menu" parent="frotaweb.menu_root" action="frotaweb_dashboard_action" sequence="1"/>
+
+        <record id="view_users_form_oauth_inherit" model="ir.ui.view">
+            <field name="name">auth.oauth.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="auth_oauth.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <field name="traccar_token" string="Integration token"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_maintenance_equipment_form_inherit" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.inherit</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="inside">
+                    <group>
+                        <field name="last_update" readonly="1" widget="datetime" string="Last update"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_equipment_view_tree" model="ir.ui.view">
+            <field name="name">maintenance.equipment.tree.inherit</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="inside">
+                    <field name="last_update"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr_equipment_view_kanban" model="ir.ui.view">
+            <field name="name">maintenance.equipment.kanban.inherit</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//footer/div[1]" position="before">
+                    <field name="last_update"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_my_model_map" model="ir.ui.view">
+            <field name="model">maintenance.equipment</field>
+            <field name="arch" type="xml">
+            <leaflet_map
+                    field_latitude="FIELD_LATITUDE"
+                    field_longitude="FIELD_LONGITUDE"
+                    field_title="FIELD_TITLE"
+                    field_address="FIELD_ADDRESS"
+                    field_marker_icon_image="FIELD_MARKER_ICON_IMAGE"
+            >
+                <field name="__last_update"/>
+                <field name="FIELD_LATITUDE"/>
+                <field name="FIELD_LONGITUDE"/>
+                <field name="FIELD_TITLE"/>
+                <field name="FIELD_ADDRESS"/>
+            </leaflet_map>
+        </field>
+
+        <record id="frotaweb.action_my_model" model="ir.actions.act_window">
+            <field name="view_mode">tree,form,leaflet_map</field>
+        </record>
+    </data>
+
+
+
+</odoo>

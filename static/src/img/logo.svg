@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 64.00 64.00" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+ <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.384"></g>
+ <g id="SVGRepo_iconCarrier" transform="rotate(45 32 32)">
+  <rect width="64" height="64" fill="white" fill-opacity="0.01"></rect>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M32 58.667C45.3935 58.667 56.667 47.3935 56.667 34C56.667 20.6065 45.3935 9.33301 32 9.33301C18.6065 9.33301 7.33301 20.6065 7.33301 34C7.33301 47.3935 18.6065 58.667 32 58.667Z" fill="#f87137" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+  <path d="M32 17.333L22.667 45.333L32 38.667L41.333 45.333L32 17.333Z" fill="#37bdf8" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+ </g>
+</svg>

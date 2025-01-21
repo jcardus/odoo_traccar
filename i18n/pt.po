@@ -1,0 +1,3 @@
+#. module: frotaweb
+msgid "Another asset already exists with this serial number!"
+msgstr "Já existe outro ativo com este número de série."
