@@ -63,13 +63,33 @@
             </field>
         </record>
 
-        <record id="my_beautiful_view" model="ir.ui.view">
-            <field name="name">my_view</field>
+
+        <record id="view_maintenance_equipment_map" model="ir.ui.view">
+            <field name="name">maintenance.equipment.leaflet</field>
             <field name="model">maintenance.equipment</field>
             <field name="arch" type="xml">
-                <leaflet />
+                <leaflet string="Equipment Map">
+                    <field name="name"/>
+                    <field name="partner_id" options="{'color': 'color'}"/>
+                    <field name="latitude"/>
+                    <field name="location_longitude"/>
+                </leaflet>
             </field>
         </record>
+
+        <record id="maintenance_equipment_action" model="ir.actions.act_window">
+            <field name="name">Equipment</field>
+            <field name="res_model">maintenance.equipment</field>
+            <field name="view_mode">kanban,tree,form,leaflet</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new equipment record.
+                </p>
+            </field>
+        </record>
+
+
+
     </data>
 
 
