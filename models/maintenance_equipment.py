@@ -11,6 +11,7 @@ class MaintenanceEquipment(models.Model):
     _inherit = 'maintenance.equipment'
 
     latitude = fields.Float()
+    longitude = fields.Float()
     serial_no = fields.Char(
         required=True
     )
