@@ -77,21 +77,21 @@
             </field>
         </record>
 
-        <record id="maintenance_equipment_action" model="ir.actions.act_window">
+    </data>
+    <data>
+        <record id="maintenance.hr_equipment_action" model="ir.actions.act_window">
             <field name="name">Equipment</field>
             <field name="res_model">maintenance.equipment</field>
-            <field name="view_mode">kanban,tree,form,leaflet</field>
+            <field name="view_mode">kanban,list,form,leaflet</field>
+            <field name="view_id" ref="hr_equipment_view_kanban"/>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to create a new equipment record.
-                </p>
+                <p class="o_view_nocontent_smiling_face">
+                    Add a new equipment
+                </p><p>
+                Track equipment and link it to an employee or department.
+                You will be able to manage allocations, issues and maintenance of your equipment.
+            </p>
             </field>
         </record>
-
-
-
     </data>
-
-
-
 </odoo>
