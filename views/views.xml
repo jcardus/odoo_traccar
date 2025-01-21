@@ -1,20 +1,15 @@
 <odoo>
     <data>
-        <record model="ir.actions.client" id="odoo_traccar.dashboard">
+        <record id="odoo_traccar.dashboard" model="ir.actions.client">
             <field name="name">Frotaweb Dashboard</field>
             <field name="tag">odoo_traccar.dashboard</field>
         </record>
-        <!-- Define the URL action -->
         <record id="odoo_traccar_dashboard_action" model="ir.actions.act_url">
             <field name="name">Plataforma</field>
             <field name="url">https://dash.frotaweb.com/api/session/openid/auth</field>
             <field name="target">new</field> <!-- Opens in a new tab -->
         </record>
-
-        <!-- Define the root menu -->
         <menuitem name="Frotaweb" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
-
-        <!-- Define the second-level menu -->
         <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar_dashboard_action" sequence="1"/>
 
         <record id="view_users_form_oauth_inherit" model="ir.ui.view">
@@ -27,7 +22,6 @@
                 </xpath>
             </field>
         </record>
-
         <record id="view_maintenance_equipment_form_inherit" model="ir.ui.view">
             <field name="name">maintenance.equipment.form.inherit</field>
             <field name="model">maintenance.equipment</field>
@@ -40,7 +34,6 @@
                 </xpath>
             </field>
         </record>
-
         <record id="hr_equipment_view_tree" model="ir.ui.view">
             <field name="name">maintenance.equipment.tree.inherit</field>
             <field name="model">maintenance.equipment</field>
@@ -51,7 +44,6 @@
                 </xpath>
             </field>
         </record>
-
         <record id="hr_equipment_view_kanban" model="ir.ui.view">
             <field name="name">maintenance.equipment.kanban.inherit</field>
             <field name="model">maintenance.equipment</field>
@@ -62,8 +54,6 @@
                 </xpath>
             </field>
         </record>
-
-
         <record id="view_maintenance_equipment_map" model="ir.ui.view">
             <field name="name">maintenance.equipment.leaflet</field>
             <field name="model">maintenance.equipment</field>
@@ -76,9 +66,6 @@
                 </leaflet>
             </field>
         </record>
-
-    </data>
-    <data>
         <record id="maintenance.hr_equipment_action" model="ir.actions.act_window">
             <field name="name">Equipment</field>
             <field name="res_model">maintenance.equipment</field>
