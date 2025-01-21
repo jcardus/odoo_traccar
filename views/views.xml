@@ -5,17 +5,17 @@
             <field name="tag">odoo_traccar.dashboard</field>
         </record>
         <!-- Define the URL action -->
-        <record id="frotaweb_dashboard_action" model="ir.actions.act_url">
+        <record id="odoo_traccar_dashboard_action" model="ir.actions.act_url">
             <field name="name">Plataforma</field>
             <field name="url">https://dash.frotaweb.com/api/session/openid/auth</field>
             <field name="target">new</field> <!-- Opens in a new tab -->
         </record>
 
         <!-- Define the root menu -->
-        <menuitem name="Frotaweb" id="frotaweb.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
+        <menuitem name="Frotaweb" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
 
         <!-- Define the second-level menu -->
-        <menuitem name="Plataforma" id="frotaweb.dashboard_menu" parent="frotaweb.menu_root" action="frotaweb_dashboard_action" sequence="1"/>
+        <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar_dashboard_action" sequence="1"/>
 
         <record id="view_users_form_oauth_inherit" model="ir.ui.view">
             <field name="name">auth.oauth.users.form.inherit</field>
@@ -63,13 +63,13 @@
             </field>
         </record>
 
-        <!--record id="my_beautiful_view" model="ir.ui.view">
+        <record id="my_beautiful_view" model="ir.ui.view">
             <field name="name">my_view</field>
             <field name="model">maintenance.equipment</field>
             <field name="arch" type="xml">
                 <leaflet />
             </field>
-        </record-->
+        </record>
     </data>
 
 
