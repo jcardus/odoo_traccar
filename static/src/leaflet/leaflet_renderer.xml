@@ -20,7 +20,7 @@
                 </ul>
             </aside>
             <div class="main">
-                <div t-ref="map"  style="height: 100%"/>
+                <div id="map"  style="height: 100%"/>
             </div>
         </div>
     </t>

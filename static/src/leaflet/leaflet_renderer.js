@@ -6,7 +6,6 @@ import {
     onWillStart
 } from "@odoo/owl";
 
-import { _t } from "@web/core/l10n/translation";
 import { Field } from "@web/views/fields/field";
 import { ViewScaleSelector } from "@web/views/view_components/view_scale_selector";
 import { useService } from "@web/core/utils/hooks";
@@ -14,11 +13,11 @@ import { Pager } from "@web/core/pager/pager";
 import { Widget } from "@web/views/widgets/widget";
 import { loadJS, loadCSS } from "@web/core/assets"
 
+const mapboxAccessToken='pk.eyJ1IjoiZW50cmFjayIsImEiOiJjbTY3OGl0c20wMXB4MmpyNGk1ZzUweW53In0.aEqzNwlbMnufoMxcyh2jig'
+
 export class LeafletRenderer extends Component {
     setup() {
         this.uiService = useService("ui");
-        this.leafletRef = useRef("leaflet");
-
         this.root = useRef('map')
         this.action = useService('action')
         const { latitude, longitude, center, zoom, title, fieldsToDisplay, fieldNodes, widgetNodes} = this.props.archInfo
@@ -35,25 +34,29 @@ export class LeafletRenderer extends Component {
         this.records =  this.props.data.records;
 
         onWillStart(async ()=>{
-            await loadCSS("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css")
-            await loadJS("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
+            await loadCSS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css")
+            await loadJS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js")
         })
 
         onMounted(()=>{
-            this.map = L.map(this.root.el).setView([this.center_lat, this.center_long], this.zoom);
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(this.map);
+            mapboxgl.accessToken = mapboxAccessToken
+            const map = new mapboxgl.Map({
+                container: 'map', // container ID
+                center: [-7.5, 37.5], // starting position [lng, lat]. Note that lat must be set between -90 and 90
+                zoom: 9 // starting zoom
+            });
+            map.addControl(new mapboxgl.NavigationControl());
+            map.on('style.load', () => {
+                map.setFog({}); // Set the default atmosphere style
+            });
 
             this.records.forEach(record => {
                 this.createMarker(record);
             })
 
-            this.map.on('popupopen', ()=>{
+            /*this.map.on('popupopen', ()=>{
                 this.openContact()
-            })
+            })*/
         })
 
     }

@@ -13,10 +13,7 @@ class TraccarAPI:
 
     @staticmethod
     def _get_traccar_url():
-        traccar_url = os.environ.get('TRACCAR_URL')
-        if not traccar_url:
-            raise UserError(_("Tracking server URL is not configured."))
-        return traccar_url
+        return os.environ.get('TRACCAR_URL') or "http://gps.frotaweb.com"
 
     def _get_headers(self):
         user = self.env.user
