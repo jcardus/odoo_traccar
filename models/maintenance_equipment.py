@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from odoo.http import request
 from ..utils.traccar_api import TraccarAPI
 
 logger = logging.getLogger(__name__)
@@ -108,23 +109,42 @@ class MaintenanceEquipment(models.Model):
 
     def unlink(self):
         for record in self:
-            try:
-                traccar = TraccarAPI(self.env)
-                response = traccar.get("api/devices")
-                if response.status_code == 200:
-                    devices = response.json()
-                    device = next((dev for dev in devices if dev['uniqueId'] == record.serial_no), None)
-                    if device:
-                        traccar_device_id = device.get('id')
-                        delete_response = traccar.delete(f"api/devices/{traccar_device_id}")
-                        if delete_response.status_code == 204:
-                            logger.info(
-                                f"Device with serial number {record.serial_no} deleted from Traccar successfully.")
-                        else:
-                            logger.error(
-                                f"Failed to delete device {record.serial_no} from Traccar: {delete_response.text}")
-                    else:
-                        logger.warning(f"Device with serial number {record.serial_no} not found in Traccar.")
-            except Exception as e:
-                logger.error(f"Error while deleting device from Traccar: {e}")
+            traccar = TraccarAPI(self.env)
+            devices = self._get_traccar_devices()
+            device = next((dev for dev in devices.values() if dev['uniqueId'] == record.serial_no), None)
+            if device:
+                traccar_device_id = device.get('id')
+                delete_response = traccar.delete(f"api/devices/{traccar_device_id}")
+                if delete_response.status_code == 204:
+                    logger.info(
+                        f"Device with serial number {record.serial_no} deleted from Traccar successfully.")
+                else:
+                    logger.error(
+                        f"Failed to delete device {record.serial_no} from Traccar: {delete_response.text}")
+            else:
+                logger.warning(f"Device with serial number {record.serial_no} not found in Traccar.")
         return super(MaintenanceEquipment, self).unlink()
+
+    @api.model
+    def read(self, fields=None, load='_classic_read'):
+        if request and not request.session.get('sync_done'):
+            self._sync_traccar_devices()
+            request.session['sync_done'] = True  # Store flag in user session
+        return super(MaintenanceEquipment, self).read(fields, load)
+    def _sync_traccar_devices(self):
+        devices = self._get_traccar_devices()
+        if not devices:
+            return
+
+        existing_serial_numbers = set(self.search([]).mapped('serial_no'))
+        new_devices = [
+            {
+                'name': device.get('name'),
+                'serial_no': device.get('uniqueId'),
+            }
+            for key, device in devices.items()
+            if device.get('uniqueId') not in existing_serial_numbers
+        ]
+        if new_devices:
+            logger.info("Adding %d new devices to Odoo", len(new_devices))
+            super(MaintenanceEquipment, self).create(new_devices)
