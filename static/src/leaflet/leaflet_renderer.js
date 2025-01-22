@@ -59,7 +59,7 @@ export class LeafletRenderer extends Component {
     }
 
     createMarker(record){
-
+        return
         if (record.data[this.latitude] != 0 && record.data[this.longitude] != 0) {
 
             const marker = L.marker([record.data[this.latitude], record.data[this.longitude]]).addTo(this.map);

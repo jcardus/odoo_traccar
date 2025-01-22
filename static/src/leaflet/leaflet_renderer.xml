@@ -1,20 +1,8 @@
 <templates xml:space="preserve">
     <t t-name="odoo_traccar.LeafletRenderer" owl="1">
-
         <div class="wrapper h-100">
             <aside id="sidebar">
-                <div class="d-flex">
-
-                    <button class="toggle-btn" type="button" t-on-click="sidebarExpand">
-                        <i class="fa fa-th-large"></i>
-                    </button>
-                    <div class="sidebar-logo">
-                        <span t-out="title"/>
-                    </div>
-                </div>
-
                 <t t-set="list" t-value="getRecords()" />
-
                 <ul class="sidebar-nav overflow-hidden overflow-y-auto">
                     <t t-foreach="list" t-as="record" t-key="record.id">
                         <li class="sidebar-item">
@@ -31,8 +19,8 @@
                     </t>
                 </ul>
             </aside>
-            <div class="main p-3">
-                <div t-ref="map"  style="height: 95vh;"/>
+            <div class="main">
+                <div t-ref="map"  style="height: 100%"/>
             </div>
         </div>
     </t>

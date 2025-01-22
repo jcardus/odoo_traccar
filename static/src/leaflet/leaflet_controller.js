@@ -7,7 +7,7 @@ import {
 } from "@odoo/owl";
 
 import { Layout } from "@web/search/layout";
-import { useService, useBus } from "@web/core/utils/hooks";
+import { useService } from "@web/core/utils/hooks";
 import { standardViewProps } from "@web/views/standard_view_props";
 import { SearchBar } from "@web/search/search_bar/search_bar";
 import { CogMenu } from "@web/search/cog_menu/cog_menu";
@@ -16,13 +16,14 @@ import { useModelWithSampleData } from "@web/model/model";
 import { extractFieldsFromArchInfo } from "@web/model/relational_model/utils";
 import { usePager } from "@web/search/pager_hook";
 import { useSearchBarToggler } from "@web/search/search_bar/search_bar_toggler";
+import { rpc } from "@web/core/network/rpc";
+
 
 export class LeafletController extends Component {
     async setup() {
         this.actionService = useService("action");
         this.dialogService = useService("dialog");
-        this.userService = useService("user");
-        this.rpc = useService("rpc");
+        this.rpc = rpc
         this.rootRef = useRef("root");
 
         this.archInfo = this.props.archInfo;
