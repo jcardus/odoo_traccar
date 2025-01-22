@@ -10,8 +10,14 @@ logger = logging.getLogger(__name__)
 class MaintenanceEquipment(models.Model):
     _inherit = 'maintenance.equipment'
 
-    latitude = fields.Float()
-    longitude = fields.Float()
+    latitude = fields.Float(
+        compute="_compute_latitude",
+        store=False,
+    )
+    longitude = fields.Float(
+        compute="_compute_longitude",
+        store=False,
+    )
     serial_no = fields.Char(
         required=True
     )
@@ -21,24 +27,65 @@ class MaintenanceEquipment(models.Model):
         help="Displays the last known update time."
     )
 
-    def _compute_last_update(self):
-        for record in self:
-            record.last_update = False
-        try:
+    def _get_traccar_devices(self):
+        key = '_traccar_devices'
+        devices = self.env.context.get(key)
+
+        if devices is None:
             traccar = TraccarAPI(self.env)
             response = traccar.get("api/devices")
             if response.status_code == 200:
                 devices = {dev['uniqueId']: dev for dev in response.json()}
-                for record in self:
-                    device = devices.get(record.serial_no)
-                    if device and device['lastUpdate']:
-                        record.last_update = datetime.strptime(
-                            re.sub(r'[+\-]\d{2}:\d{2}|Z', '', device['lastUpdate']),
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )
+                self = self.with_context({key: devices})
+            else:
+                devices = {}
+                logger.error(f"Failed to fetch Traccar devices: {response.text}")
 
-        except Exception as e:
-            logger.error(f"Error fetching data: {str(e)}")
+        return devices
+
+    def _get_traccar_positions(self):
+        key = '_traccar_positions'
+        positions = self.env.context.get(key)
+
+        if positions is None:
+            traccar = TraccarAPI(self.env)
+            response = traccar.get("api/positions")
+            if response.status_code == 200:
+                positions = {dev['deviceId']: dev for dev in response.json()}
+                self = self.with_context({key: positions})
+            else:
+                positions = {}
+                logger.error(f"Failed to fetch Traccar positions: {response.text}")
+
+        return positions
+
+    def _compute_last_update(self):
+        for record in self:
+            record.last_update = False
+        devices = self._get_traccar_devices()
+        for record in self:
+            device = devices.get(record.serial_no)
+            if device and device['lastUpdate']:
+                record.last_update = datetime.strptime(
+                    re.sub(r'[+\-]\d{2}:\d{2}|Z', '', device['lastUpdate']),
+                    "%Y-%m-%dT%H:%M:%S.%f"
+                )
+
+    def _compute_longitude(self):
+        return self._compute('longitude')
+    def _compute_latitude(self):
+        return self._compute('latitude')
+
+    def _compute(self, field):
+        devices = self._get_traccar_devices()
+        positions = self._get_traccar_positions()
+        for record in self:
+            record[field] = 0
+            device = devices.get(record.serial_no)
+            if device is not None:
+                position = positions.get(device['id'])
+                if position is not None:
+                    record[field] = position[field]
 
     @api.model_create_multi
     def create(self, vals_list):
