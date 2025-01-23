@@ -63,26 +63,14 @@ export class LeafletRenderer extends Component {
 
     setMapView(record) {
         if (record.data.latitude && record.data.longitude) {
-            if (marker && marker.getPopup().isOpen()) {
-                marker.togglePopup()
-            }
+            if (marker && marker.getPopup().isOpen()) { marker.togglePopup() }
             this.state.name = record.data.name
             const lngLat = [record.data.longitude, record.data.latitude]
             map.easeTo({ center: lngLat, zoom: 13 })
-            marker = markers.find(m => {
-                const markerLngLat = m.getLngLat();
-                return markerLngLat.lng === record.data.longitude && markerLngLat.lat === record.data.latitude;
-            });
-            if (marker) {
-                // marker.getPopup().setHTML(this.popup.el.outerHTML)
-                if (!marker.getPopup().isOpen()) {
-                    marker.togglePopup()
-                }
-            }
+            marker = markers.find(m => m.getLngLat().lng === lngLat[0] && m.getLngLat().lat === lngLat[1])
+            if (marker && !marker.getPopup().isOpen()) { marker.togglePopup() }
         }
     }
-
-
 
     getRecords() {
         if (map && !this.state.name) { this.updateMarkers() }
