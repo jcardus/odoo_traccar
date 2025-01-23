@@ -1,9 +1,3 @@
-::after,
-::before {
-    margin: 0;
-    padding: 0;
-}
-
 a {
     text-decoration: none;
 }
@@ -30,28 +24,27 @@ li {
 }
 
 .sidebar-nav {
-    padding: 1rem 0;
-    flex: 1 1 auto;
+    padding: 0;
 }
 
 a.sidebar-link {
     padding: .625rem 1.625rem;
     display: block;
-    font-size: 0.9rem;
     white-space: nowrap;
     border-left: 3px solid transparent;
-}
-
-.sidebar-link i {
-    font-size: 1.1rem;
-    margin-right: .75rem;
-}
-
-a.sidebar-link:hover {
-    background-color: rgba(255, 255, 255, .075);
-    border-left: 3px solid #3b7ddd;
+    &:hover {
+        border-left: 3px solid $o-brand-primary;
+        background-color: lighten($o-brand-primary, 45%);
+        color: $o-brand-primary;
+    }
 }
 
 .sidebar-item {
     position: relative;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        display: none;
+    }
 }
