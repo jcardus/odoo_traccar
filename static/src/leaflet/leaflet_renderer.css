@@ -20,12 +20,10 @@ li {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    transition: all 0.35s ease-in-out;
 }
 
 #sidebar {
-    max-width: 200px;
-    transition: all .25s ease-in-out;
+    width: 200px;
     display: flex;
     flex-direction: column;
 }
