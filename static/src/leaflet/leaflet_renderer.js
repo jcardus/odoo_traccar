@@ -4,7 +4,8 @@ import {
     onMounted,
     useRef,
     onWillStart,
-    useState
+    onWillUpdateProps,
+    useState,
 } from "@odoo/owl";
 
 import { Field } from "@web/views/fields/field";
@@ -21,18 +22,20 @@ export class LeafletRenderer extends Component {
     setup() {
         this.popup = useRef('popup')
         this.action = useService('action')
-        const { center, zoom } = this.props.archInfo
+        const {center, zoom} = this.props.archInfo
         this.center = center;
-        this.zoom = zoom? zoom:14;
-        this.records =  this.props.data.records;
+        this.zoom = zoom ? zoom : 14;
+        this.records = this.props.data.records;
         this.state = useState({name: ''})
 
-        onWillStart(async ()=>{
+        onWillStart(async () => {
             await loadCSS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css")
             await loadJS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js")
         })
 
-        onMounted(()=> {
+        onWillUpdateProps(this.willUpdateProps)
+
+        onMounted(() => {
             mapboxgl.accessToken = mapboxAccessToken
             map = new mapboxgl.Map({
                 container: 'map',
@@ -40,17 +43,39 @@ export class LeafletRenderer extends Component {
                 zoom: this.zoom
             });
             map.addControl(new mapboxgl.NavigationControl());
-            this.updateMarkers()
+            this.willUpdateProps(this.props)
             new MutationObserver(() => {
                 if (marker && marker.getPopup().isOpen()) {
                     marker.getPopup().setHTML(this.popup.el.innerHTML)
                 }
-            }).observe(this.popup.el, {subtree: true, characterData: true })
+            }).observe(this.popup.el, {subtree: true, characterData: true})
         })
-
     }
 
-    openContact(){
+    willUpdateProps({data}) {
+        const bounds = new mapboxgl.LngLatBounds();
+        markers.forEach(m => m.remove())
+        markers.length = 0
+        data.records.forEach(
+            record => {
+                if (record.data.latitude && record.data.longitude) {
+                    const lngLat = [record.data.longitude, record.data.latitude]
+                    markers.push(
+                        new mapboxgl.Marker({color: '#A5371B'})
+                            .setLngLat(lngLat)
+                            .setPopup(new mapboxgl.Popup({offset: 40}))
+                            .addTo(map)
+                    )
+                    bounds.extend(lngLat);
+                }
+            }
+        )
+        if (!bounds.isEmpty()) {
+            map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+        }
+    }
+
+    openContact() {
         const buttons = document.querySelectorAll("#leafletMapPopupOpenBtn")
         buttons.forEach(button => {
             button.addEventListener('click', ()=>{
@@ -73,30 +98,7 @@ export class LeafletRenderer extends Component {
     }
 
     getRecords() {
-        if (map && !this.state.name) { this.updateMarkers() }
         return this.props.data.records;
-    }
-
-    updateMarkers() {
-        const bounds = new mapboxgl.LngLatBounds();
-        markers.forEach(m => m.remove())
-        this.props.data.records.forEach(
-            record => {
-                if (record.data.latitude && record.data.longitude) {
-                    const lngLat = [record.data.longitude, record.data.latitude]
-                    markers.push(
-                        new mapboxgl.Marker({color: '#A5371B'})
-                            .setLngLat(lngLat)
-                            .setPopup(new mapboxgl.Popup({offset: 40}))
-                            .addTo(map)
-                    )
-                    bounds.extend(lngLat);
-                }
-            }
-        )
-        if (!bounds.isEmpty()) {
-            map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
-        }
     }
 }
 LeafletRenderer.template = "odoo_traccar.LeafletRenderer";

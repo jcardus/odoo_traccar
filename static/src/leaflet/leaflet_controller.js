@@ -14,7 +14,6 @@ import { CogMenu } from "@web/search/cog_menu/cog_menu";
 import { session } from "@web/session";
 import { useModelWithSampleData } from "@web/model/model";
 import { extractFieldsFromArchInfo } from "@web/model/relational_model/utils";
-import { usePager } from "@web/search/pager_hook";
 import { useSearchBarToggler } from "@web/search/search_bar/search_bar_toggler";
 import { rpc } from "@web/core/network/rpc";
 
@@ -31,29 +30,6 @@ export class LeafletController extends Component {
         this.model = useState(useModelWithSampleData(this.props.Model, this.modelParams));
 
         this.model.initialLimit = parseInt(this.props.archInfo.limit);
-
-        usePager(() => {
-            const { count, hasLimitedCount, isGrouped, limit, offset } = this.model.root;
-
-            return {
-                offset: offset,
-                limit: limit,
-                total: count,
-                onUpdate: async ({ offset, limit }, hasNavigated) => {
-                    if (this.model.root.editedRecord) {
-                        if (!(await this.model.root.editedRecord.save())) {
-                            return;
-                        }
-                    }
-                    await this.model.root.load({ limit, offset });
-                    if (hasNavigated) {
-                        this.onPageChangeScroll();
-                    }
-                },
-                updateTotal:
-                    !isGrouped && hasLimitedCount ? () => this.model.root.fetchCount() : undefined,
-            };
-        });
 
         this.searchBarToggler = useSearchBarToggler();
 
@@ -87,13 +63,6 @@ export class LeafletController extends Component {
             activeIdsLimit: session.active_ids_limit
         };
     }
-
-    onPageChangeScroll() {
-        if (this.rootRef && this.rootRef.el) {
-            this.rootRef.el.querySelector(".o_content").scrollTop = 0;
-        }
-    }
-
 }
 
 LeafletController.template = "odoo_traccar.LeafletView";

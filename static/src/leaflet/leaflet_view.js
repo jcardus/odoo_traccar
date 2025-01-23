@@ -31,5 +31,5 @@ export const LeafletView = {
     }
 
 };
-// Register the table view configuration
+
 registry.category("views").add("leaflet", LeafletView);
