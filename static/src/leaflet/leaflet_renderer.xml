@@ -7,12 +7,6 @@
                     <t t-foreach="list" t-as="record" t-key="record.id">
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link" t-on-click="() => this.setMapView(record)">
-                                <t t-set="iniciales" t-value="record.data.name.split(' ')"/>
-
-                                <t t-if="iniciales.length >= 2">
-                                    <a href="#" t-out="iniciales[0][0]+iniciales[1][0]" data-bs-placement="top" t-att-data-tooltip="record.data.name"/>
-                                </t>
-
                                 <span t-out="record.data.name"/>
                             </a>
                         </li>
@@ -22,6 +16,12 @@
             <div class="main">
                 <div id="map"  style="height: 100%"/>
             </div>
+
+        </div>
+        <div t-ref="popup" id="popup">
+            <t t-out="state.name"/>
+            <button class="btn btn-primary" t-on-click="openRecord">Open</button>
         </div>
     </t>
+
 </templates>

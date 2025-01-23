@@ -3,7 +3,8 @@ import {
     Component,
     onMounted,
     useRef,
-    onWillStart
+    onWillStart,
+    useState
 } from "@odoo/owl";
 
 import { Field } from "@web/views/fields/field";
@@ -13,75 +14,40 @@ import { Pager } from "@web/core/pager/pager";
 import { Widget } from "@web/views/widgets/widget";
 import { loadJS, loadCSS } from "@web/core/assets"
 
+const markers = []
 const mapboxAccessToken='pk.eyJ1IjoiZW50cmFjayIsImEiOiJjbTY3OGl0c20wMXB4MmpyNGk1ZzUweW53In0.aEqzNwlbMnufoMxcyh2jig'
-
+let map, marker
 export class LeafletRenderer extends Component {
     setup() {
-        this.uiService = useService("ui");
-        this.root = useRef('map')
+        this.popup = useRef('popup')
         this.action = useService('action')
-        const { latitude, longitude, center, zoom, title, fieldsToDisplay, fieldNodes, widgetNodes} = this.props.archInfo
-        this.latitude = latitude;
-        this.longitude = longitude;
+        const { center, zoom } = this.props.archInfo
         this.center = center;
-        this.center_lat = center? center.split(",")[0]: 29.942756347393566;
-        this.center_long = center?center.split(",")[1]: -95.39379227947576;
-        this.zoom = zoom? zoom:10;
-        this.title = title?title:"Contacts";
-        this.fieldsToDisplay = fieldsToDisplay;
-        this.fieldNodes =  fieldNodes;
-        this.widgetNodes = widgetNodes;
+        this.zoom = zoom? zoom:14;
         this.records =  this.props.data.records;
+        this.state = useState({name: ''})
 
         onWillStart(async ()=>{
             await loadCSS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.css")
             await loadJS("https://api.mapbox.com/mapbox-gl-js/v3.9.3/mapbox-gl.js")
         })
 
-        onMounted(()=>{
+        onMounted(()=> {
             mapboxgl.accessToken = mapboxAccessToken
-            const map = new mapboxgl.Map({
-                container: 'map', // container ID
-                center: [-7.5, 37.5], // starting position [lng, lat]. Note that lat must be set between -90 and 90
-                zoom: 9 // starting zoom
+            map = new mapboxgl.Map({
+                container: 'map',
+                center: (this.records[0] && [this.records[0].data.longitude, this.records[0].data.latitude]) || this.center,
+                zoom: this.zoom
             });
             map.addControl(new mapboxgl.NavigationControl());
-            map.on('style.load', () => {
-                map.setFog({}); // Set the default atmosphere style
-            });
-
-            this.records.forEach(record => {
-                this.createMarker(record);
-            })
-
-            /*this.map.on('popupopen', ()=>{
-                this.openContact()
-            })*/
+            this.updateMarkers()
+            new MutationObserver(() => {
+                if (marker && marker.getPopup().isOpen()) {
+                    marker.getPopup().setHTML(this.popup.el.outerHTML)
+                }
+            }).observe(this.popup.el, {subtree: true, characterData: true })
         })
 
-    }
-
-    createMarker(record){
-        return
-        if (record.data[this.latitude] != 0 && record.data[this.longitude] != 0) {
-
-            const marker = L.marker([record.data[this.latitude], record.data[this.longitude]]).addTo(this.map);
-
-            let html = ""
-
-            if (this.fieldsToDisplay.length > 0){
-                this.fieldsToDisplay.forEach(field=>{
-                    html += `<p><b>${this.fieldNodes[field].string}:</b> ${record.data[field]}</p>`
-                })
-            } else {
-                html += `<p>${record.data["name"]}</p>`
-            }
-
-            html += `<button id="leafletMapPopupOpenBtn" data-res-id='${record.id}' class='btn btn-primary'>Open</button>`
-
-            marker.bindPopup(html).openPopup();
-
-        }
     }
 
     openContact(){
@@ -96,28 +62,57 @@ export class LeafletRenderer extends Component {
     }
 
     setMapView(record) {
-        console.log(record.data['name']);
-        if (record.data[this.latitude] && record.data[this.longitude]) {
-            this.map.setView([record.data[this.latitude], record.data[this.longitude]], 14)
+        if (record.data.latitude && record.data.longitude) {
+            if (marker && marker.getPopup().isOpen()) {
+                marker.togglePopup()
+            }
+            this.state.name = record.data.name
+            const lngLat = [record.data.longitude, record.data.latitude]
+            map.easeTo({ center: lngLat, zoom: 13 })
+            marker = markers.find(m => {
+                const markerLngLat = m.getLngLat();
+                return markerLngLat.lng === record.data.longitude && markerLngLat.lat === record.data.latitude;
+            });
+            if (marker) {
+                // marker.getPopup().setHTML(this.popup.el.outerHTML)
+                if (!marker.getPopup().isOpen()) {
+                    marker.togglePopup()
+                }
+            }
         }
     }
 
+
+
     getRecords() {
-        if (this.map) {
-
-            this.props.data.records.forEach(record => {
-                this.createMarker(record);
-            })
-
-        }
-
+        if (map && !this.state.name) { this.updateMarkers() }
         return this.props.data.records;
     }
 
-    sidebarExpand() {
-        document.querySelector("#sidebar").classList.toggle("expand");
+    updateMarkers() {
+        const bounds = new mapboxgl.LngLatBounds();
+        markers.forEach(m => m.remove())
+        this.props.data.records.forEach(
+            record => {
+                if (record.data.latitude && record.data.longitude) {
+                    const lngLat = [record.data.longitude, record.data.latitude]
+                    const popup = new mapboxgl.Popup({
+                        offset: 40
+                    })
+                    markers.push(
+                        new mapboxgl.Marker({color: '#A5371B'})
+                            .setLngLat(lngLat)
+                            .setPopup(popup)
+                            .addTo(map)
+                    )
+                    bounds.extend(lngLat);
+                }
+            }
+        )
+        if (!bounds.isEmpty()) {
+            map.fitBounds(bounds, { padding: 50, maxZoom: 15 });
+        }
     }
-
 }
 LeafletRenderer.template = "odoo_traccar.LeafletRenderer";
 

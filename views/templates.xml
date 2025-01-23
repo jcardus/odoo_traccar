@@ -14,4 +14,13 @@
             </t>
         </div>
     </template>
+    <template id="marker_popup_template">
+        <div class="marker-popup-content">
+            <h4 t-esc="record.name"/>
+            <p><t t-esc="record.description"/></p>
+            <button class="btn btn-primary" t-att-data-id="record.id" t-att-onclick="'openRecord(' + record.id + ')'">
+                Open
+            </button>
+        </div>
+    </template>
 </odoo>

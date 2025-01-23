@@ -24,6 +24,7 @@ li {
 }
 
 #sidebar {
+    max-width: 200px;
     transition: all .25s ease-in-out;
     display: flex;
     flex-direction: column;
@@ -54,46 +55,4 @@ a.sidebar-link:hover {
 
 .sidebar-item {
     position: relative;
-}
-
-#sidebar.expand .sidebar-item .sidebar-dropdown {
-    position: absolute;
-    top: 0;
-    left: 260px;
-    background-color: #0e2238;
-    padding: 0;
-    min-width: 15rem;
-    display: none;
-}
-
-#sidebar.expand .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
-    display: block;
-    max-height: 15em;
-    width: 100%;
-    opacity: 1;
-}
-
-#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
-    border: solid;
-    border-width: 0 .075rem .075rem 0;
-    content: "";
-    display: inline-block;
-    padding: 2px;
-    position: absolute;
-    right: 1.5rem;
-    top: 1.4rem;
-    transform: rotate(-135deg);
-    transition: all .2s ease-out;
-}
-
-#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
-    transform: rotate(45deg);
-    transition: all .2s ease-out;
-}
-
-.leaflet-top,
-.leaflet-bottom {
-	position: absolute;
-	z-index: 600 !important;
-	pointer-events: none;
 }
