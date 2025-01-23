@@ -18,7 +18,7 @@
             </div>
 
         </div>
-        <div t-ref="popup" id="popup">
+        <div t-ref="popup" style="display: none">
             <t t-out="state.name"/>
             <button class="btn btn-primary" t-on-click="openRecord">Open</button>
         </div>

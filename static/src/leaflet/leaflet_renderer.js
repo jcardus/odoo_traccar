@@ -43,7 +43,7 @@ export class LeafletRenderer extends Component {
             this.updateMarkers()
             new MutationObserver(() => {
                 if (marker && marker.getPopup().isOpen()) {
-                    marker.getPopup().setHTML(this.popup.el.outerHTML)
+                    marker.getPopup().setHTML(this.popup.el.innerHTML)
                 }
             }).observe(this.popup.el, {subtree: true, characterData: true })
         })
@@ -84,13 +84,10 @@ export class LeafletRenderer extends Component {
             record => {
                 if (record.data.latitude && record.data.longitude) {
                     const lngLat = [record.data.longitude, record.data.latitude]
-                    const popup = new mapboxgl.Popup({
-                        offset: 40
-                    })
                     markers.push(
                         new mapboxgl.Marker({color: '#A5371B'})
                             .setLngLat(lngLat)
-                            .setPopup(popup)
+                            .setPopup(new mapboxgl.Popup({offset: 40}))
                             .addTo(map)
                     )
                     bounds.extend(lngLat);
