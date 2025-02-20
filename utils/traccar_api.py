@@ -18,7 +18,7 @@ class TraccarAPI:
     def _get_headers(self):
         user = self.env.user
         if not user.traccar_token:
-            raise UserError(_("The current user is not authorized to sync with Traccar."))
+            raise UserError(_("The current user is not authorized to sync with gps platform."))
         return {
             "Authorization": f"Bearer {user.traccar_token}",
             "Content-Type": "application/json",
