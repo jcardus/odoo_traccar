@@ -3,7 +3,7 @@
     'version': '0.1',
     'summary': 'Main module',
     'depends': [
-        'account', 'portal', 'auth_oauth', 'maintenance'
+        'portal', 'auth_oauth', 'maintenance'
     ],
     'auto_install': [],
     'application': True,
