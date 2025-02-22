@@ -9,7 +9,7 @@
             <field name="url">https://dash.frotaweb.com/api/session/openid/auth</field>
             <field name="target">new</field> <!-- Opens in a new tab -->
         </record>
-        <menuitem name="Frotaweb" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
+        <menuitem name="Mapa" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
         <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar_dashboard_action" sequence="1"/>
 
         <record id="view_users_form" model="ir.ui.view">
