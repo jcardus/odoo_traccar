@@ -17,4 +17,18 @@ class OdooTraccar extends Component {
     }
 }
 
+
+class OdooTraccarReports extends Component {
+    static template = "frotaweb.dashboard";
+
+    setup() {
+        this.state = useState({iframeSrc: ""});
+        onWillStart(async () => {
+            const token = await rpc('/odoo_traccar/token')
+            this.state.iframeSrc = `https://dash.frotaweb.com/reports/combined/traccar?token=${token}`;
+        });
+    }
+}
+
 registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);
+registry.category("actions").add("odoo_traccar.reports", OdooTraccarReports);
