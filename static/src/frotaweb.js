@@ -3,6 +3,8 @@
 import  { Component, onMounted, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
+import { markup } from "@odoo/owl";
+import { escape, sprintf } from "@web/core/utils/strings";
 
 
 class OdooTraccar extends Component {
