@@ -31,7 +31,6 @@ class OdooTraccarReports extends Component {
 }
 
 class OdooTraccarPlatform extends Component {
-    static template = "frotaweb.dashboard";
     setup() {
         onMounted(async () => {
             window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`)
