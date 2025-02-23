@@ -1,12 +1,16 @@
 <odoo>
     <data>
         <record id="odoo_traccar.dashboard" model="ir.actions.client">
-            <field name="name">Frotaweb Dashboard</field>
+            <field name="name">Dashboard</field>
             <field name="tag">odoo_traccar.dashboard</field>
         </record>
         <record id="odoo_traccar.reports" model="ir.actions.client">
-            <field name="name">Frotaweb Reports</field>
+            <field name="name">Reports</field>
             <field name="tag">odoo_traccar.reports</field>
+        </record>
+        <record id="odoo_traccar.platform" model="ir.actions.client">
+            <field name="name">Platform</field>
+            <field name="tag">odoo_traccar.platform</field>
         </record>
         <menuitem name="Mapa" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
         <menuitem name="Reportes" id="odoo_traccar.reports_menu" parent="odoo_traccar.menu_root" action="odoo_traccar.reports" sequence="1"/>
