@@ -30,7 +30,7 @@ class OdooTraccarReports extends Component {
     }
 }
 
-export function displayNotificationAction(env, action) {
+export function displayNotificationAction2(env, action) {
     const params = action.params || {};
     const options = {
         className: params.className || "",
@@ -48,4 +48,4 @@ export function displayNotificationAction(env, action) {
 
 registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);
 registry.category("actions").add("odoo_traccar.reports", OdooTraccarReports);
-registry.category("actions").add("odoo_traccar.platform", displayNotificationAction);
+registry.category("actions").add("odoo_traccar.platform", displayNotificationAction2);
