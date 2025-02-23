@@ -45,6 +45,7 @@ export function displayNotificationAction2(env, action) {
     });
     const message = markup(sprintf(escape(params.message), ...links));
     env.services.notification.add(message, options);
+    window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`)
     return params.next;
 }
 
