@@ -18,71 +18,17 @@
         <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar_dashboard_action" sequence="2"/>
 
         <record id="view_users_form" model="ir.ui.view">
-            <field name="name">auth.oauth.users.form.inherit</field>
+            <field name="name">res.users.form.inherit</field>
             <field name="model">res.users</field>
-            <field name="inherit_id" ref="auth_oauth.view_users_form"/>
+            <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group" position="inside">
-                    <field name="traccar_token" string="Integration token"/>
+                <xpath expr="//page[@name='preferences']" position="after">
+                    <page string="Fleet tracking" name="tracking">
+                        <group>
+                            <field name="traccar_token" string="Integration token"/>
+                        </group>
+                    </page>
                 </xpath>
-            </field>
-        </record>
-        <record id="hr_equipment_view_form" model="ir.ui.view">
-            <field name="name">maintenance.equipment.form.inherit</field>
-            <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//group[1]" position="inside">
-                    <group>
-                        <field name="last_update" readonly="1" widget="datetime" string="Last update"/>
-                    </group>
-                </xpath>
-            </field>
-        </record>
-        <record id="hr_equipment_view_tree" model="ir.ui.view">
-            <field name="name">maintenance.equipment.tree.inherit</field>
-            <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
-            <field name="arch" type="xml">
-                <xpath expr="//list" position="inside">
-                    <field name="last_update"/>
-                </xpath>
-            </field>
-        </record>
-        <record id="hr_equipment_view_kanban" model="ir.ui.view">
-            <field name="name">maintenance.equipment.kanban.inherit</field>
-            <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
-            <field name="arch" type="xml">
-                <xpath expr="//footer/div[1]" position="before">
-                    <field name="last_update"/>
-                </xpath>
-            </field>
-        </record>
-        <record id="hr_equipment_view_map" model="ir.ui.view">
-            <field name="name">maintenance.equipment.leaflet</field>
-            <field name="model">maintenance.equipment</field>
-            <field name="arch" type="xml">
-                <leaflet string="Equipment Map">
-                    <field name="name"/>
-                    <field name="partner_id" options="{'color': 'color'}"/>
-                    <field name="latitude"/>
-                    <field name="longitude"/>
-                </leaflet>
-            </field>
-        </record>
-        <record id="maintenance.hr_equipment_action" model="ir.actions.act_window">
-            <field name="name">Equipment</field>
-            <field name="res_model">maintenance.equipment</field>
-            <field name="view_mode">kanban,list,form,leaflet</field>
-            <field name="view_id" ref="hr_equipment_view_kanban"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Add a new equipment
-                </p><p>
-                Track equipment and link it to an employee or department.
-                You will be able to manage allocations, issues and maintenance of your equipment.
-            </p>
             </field>
         </record>
     </data>
