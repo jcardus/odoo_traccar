@@ -32,4 +32,4 @@ class OdooTraccarReports extends Component {
 
 registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);
 registry.category("actions").add("odoo_traccar.reports", OdooTraccarReports);
-registry.category("actions").add("odoo_traccar.platform", () => window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`));
+registry.category("actions").add("odoo_traccar.platform", async () => window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`));
