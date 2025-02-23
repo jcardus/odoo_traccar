@@ -15,7 +15,6 @@
         'fleet_vehicle_service_activity',
         'fleet_vehicle_service_calendar',
         'fleet_vehicle_service_kanban',
-        'fleet_vehicle_service_services',
         'fleet_vehicle_usage'
     ],
     'auto_install': [],
