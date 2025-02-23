@@ -3,8 +3,6 @@
 import  { Component, onMounted, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { markup } from "@odoo/owl";
-import { escape, sprintf } from "@web/core/utils/strings";
 
 
 class OdooTraccar extends Component {
@@ -34,17 +32,6 @@ class OdooTraccarReports extends Component {
 
 export function displayNotificationAction2(env, action) {
     const params = action.params || {};
-    const options = {
-        className: params.className || "",
-        sticky: params.sticky || false,
-        title: params.title,
-        type: params.type || "info",
-    };
-    const links = (params.links || []).map((link) => {
-        return `<a href="${escape(link.url)}" target="_blank">${escape(link.label)}</a>`;
-    });
-    const message = markup(sprintf(escape(params.message), ...links));
-    env.services.notification.add(message, options);
     window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`)
     return params.next;
 }
