@@ -3,6 +3,7 @@
     'version': '0.1',
     'summary': 'Main module',
     'depends': [
+        'fleet',
         'fleet_vehicle_calendar_year',
         'fleet_vehicle_category',
         'fleet_vehicle_configuration',
