@@ -30,18 +30,6 @@ class OdooTraccarReports extends Component {
     }
 }
 
-class OdooTraccarReports extends Component {
-    static template = "frotaweb.dashboard";
-    setup() {
-        this.state = useState({iframeSrc: ""});
-        this.rpc = useService('rpc')
-        onMounted(async () => {
-            const token = await this.rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://${window.location.hostname.replace(/^[^.]+/, "traccar")}/reports/combined?token=${token}`;
-        });
-    }
-}
-
 export function displayNotificationAction(env, action) {
     const params = action.params || {};
     const options = {
