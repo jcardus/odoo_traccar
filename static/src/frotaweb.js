@@ -13,7 +13,7 @@ class OdooTraccar extends Component {
         this.rpc = useService('rpc')
         onMounted(async () => {
             const token = await this.rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://dash.frotaweb.com/traccar?token=${token}`;
+            this.state.iframeSrc = `https://dash.fleetmap.org/traccar?token=${token}`;
         });
     }
 }
