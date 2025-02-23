@@ -46,12 +46,12 @@ msgstr "Carte"
 #: model:ir.actions.act_url,name:odoo_traccar.odoo_traccar_dashboard_action
 #: model:ir.ui.menu,name:odoo_traccar.dashboard_menu
 msgid "Plataforma"
-msgstr ""
+msgstr "Plate-forme"
 
 #. module: odoo_traccar
 #: model:ir.ui.menu,name:odoo_traccar.reports_menu
 msgid "Reportes"
-msgstr ""
+msgstr "Rapports"
 
 #. module: odoo_traccar
 #. odoo-python

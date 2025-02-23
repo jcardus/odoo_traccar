@@ -30,5 +30,15 @@ class OdooTraccarReports extends Component {
     }
 }
 
+class OdooTraccarPlatform extends Component {
+    static template = "frotaweb.dashboard";
+    setup() {
+        onMounted(async () => {
+            window.open(`https://${window.location.hostname.replace(/^[^.]+\./, "")}`)
+        });
+    }
+}
+
 registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);
 registry.category("actions").add("odoo_traccar.reports", OdooTraccarReports);
+registry.category("actions").add("odoo_traccar.platform", OdooTraccarPlatform);

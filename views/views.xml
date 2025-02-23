@@ -8,14 +8,9 @@
             <field name="name">Frotaweb Reports</field>
             <field name="tag">odoo_traccar.reports</field>
         </record>
-        <record id="odoo_traccar_dashboard_action" model="ir.actions.act_url">
-            <field name="name">Plataforma</field>
-            <field name="url">https://dash.frotaweb.com/api/session/openid/auth</field>
-            <field name="target">new</field> <!-- Opens in a new tab -->
-        </record>
         <menuitem name="Mapa" id="odoo_traccar.menu_root" groups="base.group_user" action="odoo_traccar.dashboard" />
         <menuitem name="Reportes" id="odoo_traccar.reports_menu" parent="odoo_traccar.menu_root" action="odoo_traccar.reports" sequence="1"/>
-        <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar_dashboard_action" sequence="2"/>
+        <menuitem name="Plataforma" id="odoo_traccar.dashboard_menu" parent="odoo_traccar.menu_root" action="odoo_traccar.platform" sequence="2"/>
 
         <record id="view_users_form" model="ir.ui.view">
             <field name="name">res.users.form.inherit</field>
