@@ -1,7 +1,7 @@
 {
     'name': 'odoo_traccar',
     'version': "16.0.2.0.0",
-    'summary': 'Main module',
+    'summary': 'Traccar module',
     'depends': [
         'fleet',
         'fleet_vehicle_calendar_year',
