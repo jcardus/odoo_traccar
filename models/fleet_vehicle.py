@@ -76,11 +76,11 @@ class FleetVehicle(models.Model):
 
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
-        results = super(FleetVehicle, self).search(args, offset, limit, order, count)
         if request and not request.session.get('sync_done'):
-            results = self._sync_traccar_devices(results)
+            results = super(FleetVehicle, self).search([], 0, 1000)
+            self._sync_traccar_devices(results)
             request.session['sync_done'] = True
-        return results
+        return super(FleetVehicle, self).search(args, offset, limit, order, count)
 
     def _find_create_model_brand(self, brand):
         if not brand:
