@@ -92,7 +92,7 @@ class FleetVehicle(models.Model):
 
     def _find_create_model(self, model_string):
         if not model_string:
-            brand = 'Inconnue'
+            model_string = 'Inconnue'
         parts = model_string.split(' ', 1)
         brand = parts[0] if parts else ''
         model = parts[1] if len(parts) > 1 else parts[0]
