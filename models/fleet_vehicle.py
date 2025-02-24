@@ -82,6 +82,29 @@ class FleetVehicle(models.Model):
             request.session['sync_done'] = True
         return results
 
+    def _find_create_model_brand(self, brand):
+        if not brand:
+            brand = 'Inconnue'
+        manufacturer = self.env['fleet.vehicle.model.brand'].search([('name', '=', brand)], limit=1)
+        if not manufacturer:
+            manufacturer = self.env['fleet.vehicle.model.brand'].create({'name': brand})
+        return manufacturer.id
+
+    def _find_create_model(self, model_string):
+        parts = model_string.split(' ', 1)
+        brand = parts[0] if parts else ''
+        model = parts[1] if len(parts) > 1 else parts[0]
+        brand_id = self._find_create_model_brand(brand)
+        _model = self.env['fleet.vehicle.model'].search([
+            ('name', '=', model),
+            ('brand_id', '=', brand_id)], limit=1)
+        if not _model:
+            _model = self.env['fleet.vehicle.model'].create({
+                'name': model,
+                'brand_id': brand_id,
+            })
+        return _model.id
+
     def _sync_traccar_devices(self, results):
         devices = self._get_traccar_devices()
         if not devices:
@@ -92,7 +115,7 @@ class FleetVehicle(models.Model):
             {
                 'license_plate': device.get('name'),
                 'serial_no': device.get('uniqueId'),
-                'model_id': 1
+                'model_id': self._find_create_model(device.get('model'))
             }
             for key, device in devices.items()
             if device.get('uniqueId') not in existing_serial_numbers
