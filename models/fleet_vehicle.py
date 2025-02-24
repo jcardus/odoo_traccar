@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class FleetVehicle(models.Model):
     _inherit = 'fleet.vehicle'
 
-    serial_no = fields.Char(string="GPS Device ID", help="The unique id of the associated gps device",)
+    serial_no = fields.Char(string="GPS Device ID", help="The unique id of the associated gps device")
 
     def _get_traccar_devices(self):
         key = '_traccar_devices'
