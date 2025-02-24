@@ -13,7 +13,7 @@ class TraccarAPI:
 
     @staticmethod
     def _get_traccar_url():
-        return os.environ.get('TRACCAR_URL') or "http://gps.frotaweb.com"
+        return os.environ.get('TRACCAR_URL') or "http://gps.pinme.io"
 
     def _get_headers(self):
         user = self.env.user
