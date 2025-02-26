@@ -12,7 +12,7 @@ class OdooTraccar extends Component {
         this.state = useState({iframeSrc: ""});
         onWillStart(async () => {
             const token = await rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://dash.frotaweb.com/traccar?token=${token}`;
+            this.state.iframeSrc = `https://${window.location.hostname.replace(/^[^.]+/, "dash")}/traccar?token=${token}`;
         });
     }
 }
@@ -25,7 +25,7 @@ class OdooTraccarReports extends Component {
         this.state = useState({iframeSrc: ""});
         onWillStart(async () => {
             const token = await rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://dash.frotaweb.com/traccar/reports/combined?token=${token}`;
+            this.state.iframeSrc = `https://${window.location.hostname.replace(/^[^.]+/, "dash")}/traccar/reports/combined?token=${token}`;
         });
     }
 }
