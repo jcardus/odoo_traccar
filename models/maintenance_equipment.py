@@ -22,6 +22,12 @@ class MaintenanceEquipment(models.Model):
     serial_no = fields.Char(
         required=True
     )
+    phone = fields.Char(
+        required=False
+    )
+    apn = fields.Char(
+        required=False
+    )
     last_update = fields.Datetime(
         compute="_compute_last_update",
         store=False,
@@ -102,7 +108,11 @@ class MaintenanceEquipment(models.Model):
     def create_traccar(self, vals):
         traccar = TraccarAPI(self.env)
         response = traccar.post("api/devices",
-                                json={"uniqueId": vals.get("serial_no"), "name": vals.get("name")})
+                                json={
+                                    "uniqueId": vals.get("serial_no"),
+                                    "phone": vals.get("phone"),
+                                    "name": vals.get("name"),
+                                    "attributes": {"apn": vals.get("apn")}})
 
         if response.status_code != 200:
             raise UserError(_("Another asset already exists with this serial number!"))
@@ -141,6 +151,8 @@ class MaintenanceEquipment(models.Model):
             {
                 'name': device.get('name'),
                 'serial_no': device.get('uniqueId'),
+                "phone": device.get("phone"),
+                "apn": device.get("attributes").get("apn")
             }
             for key, device in devices.items()
             if device.get('uniqueId') not in existing_serial_numbers
