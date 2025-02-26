@@ -5,6 +5,12 @@ import { registry } from "@web/core/registry";
 import { rpc } from "@web/core/network/rpc";
 
 
+function getHost() {
+    return window.location.hostname.split('.').length === 3 ?
+        window.location.hostname.replace(/^[^.]+/, "dash") :
+        'dash.' + window.location.hostname;
+}
+
 class OdooTraccar extends Component {
     static template = "frotaweb.dashboard";
 
@@ -12,7 +18,7 @@ class OdooTraccar extends Component {
         this.state = useState({iframeSrc: ""});
         onWillStart(async () => {
             const token = await rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://${window.location.hostname.replace(/^[^.]+/, "dash")}/traccar?token=${token}`;
+            this.state.iframeSrc = `https://${getHost()}/traccar?token=${token}`;
         });
     }
 }
@@ -25,7 +31,7 @@ class OdooTraccarReports extends Component {
         this.state = useState({iframeSrc: ""});
         onWillStart(async () => {
             const token = await rpc('/odoo_traccar/token')
-            this.state.iframeSrc = `https://${window.location.hostname.replace(/^[^.]+/, "dash")}/traccar/reports/combined?token=${token}`;
+            this.state.iframeSrc = `https://${getHost()}/traccar/reports/combined?token=${token}`;
         });
     }
 }
