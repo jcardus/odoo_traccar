@@ -8,7 +8,7 @@
             <field name="name">Frotaweb Reports</field>
             <field name="tag">odoo_traccar.reports</field>
         </record>
-        <record id="odoo_traccar.dashboard" model="ir.actions.client">
+        <record id="odoo_traccar.platform" model="ir.actions.client">
             <field name="name">Plataforma</field>
             <field name="tag">odoo_traccar.platform</field>
         </record>
