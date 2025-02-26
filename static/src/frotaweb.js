@@ -36,5 +36,12 @@ class OdooTraccarReports extends Component {
     }
 }
 
+export function displayNotificationAction2(env, action) {
+    const params = action.params || {};
+    window.open(`https://${getHost()}`)
+    return params.next;
+}
+
 registry.category("actions").add("odoo_traccar.dashboard", OdooTraccar);
 registry.category("actions").add("odoo_traccar.reports", OdooTraccarReports);
+registry.category("actions").add("odoo_traccar.platform", displayNotificationAction2);
