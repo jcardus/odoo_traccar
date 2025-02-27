@@ -60,7 +60,6 @@
                 <xpath expr="//footer/div[1]" position="before">
                     <field name="last_update"/>
                     <field name="phone"/>
-                    <field name="apn"/>
                 </xpath>
             </field>
         </record>
@@ -90,7 +89,6 @@
             </p>
             </field>
         </record>
-
 
     </data>
 </odoo>
