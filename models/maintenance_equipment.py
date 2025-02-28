@@ -8,15 +8,19 @@ from ..utils.traccar_api import TraccarAPI
 
 logger = logging.getLogger(__name__)
 
+SYNCED_FIELDS = {'name', 'serial_no', 'phone', 'apn', 'model'}
+
 
 def _traccar_to_odoo(device):
-    return {
-        'name': device.get('name'),
-        'serial_no': device.get('uniqueId'),
-        "phone": device.get("phone"),
-        "apn": device.get("attributes").get("apn"),
-        "model": device.get("model")
-    }
+    odoo_data = {}
+    for field in SYNCED_FIELDS:
+        if field == "apn":
+            odoo_data["apn"] = device.get("attributes").get("apn")  # ✅ Extract APN from attributes
+        elif field == "serial_no":
+            odoo_data["serial_no"] = device.get("uniqueId")  # ✅ Ensure uniqueId maps to serial_no
+        else:
+            odoo_data[field] = device.get(field)  # ✅ General field mapping
+    return odoo_data
 
 
 def _odoo_to_traccar(vals):
@@ -28,18 +32,15 @@ def _odoo_to_traccar(vals):
         "model": vals.get("model")
     }
 
-
 def _update_traccar(update_data, vals):
-    if 'name' in vals:
-        update_data['name'] = vals['name']
-    if 'serial_no' in vals:
-        update_data['uniqueId'] = vals['serial_no']
-    if 'phone' in vals:
-        update_data['phone'] = vals['phone']
-    if 'apn' in vals:
-        update_data['attributes']['apn'] = vals['apn']
-    if 'model' in vals:
-        update_data['model'] = vals['model']
+    for field in SYNCED_FIELDS:
+        if field in vals:
+            if field == 'apn':
+                update_data['attributes']['apn'] = vals[field]  # ✅ Handle APN inside attributes
+            elif field == 'serial_no':
+                update_data['uniqueId'] = vals[field]  # ✅ Ensure serial_no syncs with uniqueId
+            else:
+                update_data[field] = vals[field]  # ✅ Generic update for other fields
 
 
 class MaintenanceEquipment(models.Model):
@@ -66,6 +67,11 @@ class MaintenanceEquipment(models.Model):
         compute="_compute_last_update",
         store=False,
         help="Displays the last known update time."
+    )
+    status = fields.Char(
+        compute="_compute_status",
+        store=False,
+        help="Device status"
     )
 
     def _get_traccar_devices(self):
@@ -133,6 +139,15 @@ class MaintenanceEquipment(models.Model):
     def _compute_latitude(self):
         return self._compute('latitude')
 
+    def _compute_status(self):
+        for record in self:
+            record.last_update = False
+        devices = self._get_traccar_devices()
+        for record in self:
+            device = devices.get(record.serial_no)
+            if device and device['status']:
+                record.status = device['status']
+
     def _compute(self, field):
         devices = self._get_traccar_devices()
         positions = self._get_traccar_positions()
@@ -144,17 +159,20 @@ class MaintenanceEquipment(models.Model):
                 if position is not None:
                     record[field] = position[field]
 
-    def _sync_traccar_devices(self):
+    def _sync_traccar_devices(self, update_existing=False):
         devices = self._get_traccar_devices()
         if not devices:
             return
 
-        existing_serial_numbers = set(self.search([]).mapped('serial_no'))
-        new_devices = [
-            _traccar_to_odoo(device)
-            for key, device in devices.items()
-            if device.get('uniqueId') not in existing_serial_numbers
-        ]
+        existing_devices = {rec.serial_no: rec for rec in self.search([])}
+        new_devices = []
+        for key, device in devices.items():
+            serial_no = device.get('uniqueId')
+            if serial_no in existing_devices:
+                if update_existing:
+                    existing_devices[serial_no].with_context(traccar_syncing=True).write(_traccar_to_odoo(device))  # ✅ Update existing records
+            else:
+                new_devices.append(_traccar_to_odoo(device))  # ✅ Only collect new devices
         if new_devices:
             logger.info("Adding %d new devices to Odoo", len(new_devices))
             super(MaintenanceEquipment, self).create(new_devices)
@@ -205,6 +223,13 @@ class MaintenanceEquipment(models.Model):
 
     def write(self, vals):
         result = super(MaintenanceEquipment, self).write(vals)
+        # Skip Traccar update if we are syncing from Traccar
+        if self.env.context.get("traccar_syncing"):
+            return result
+        # Check if any synced fields are in the update request
+        if not any(field in vals for field in SYNCED_FIELDS):
+            return result
+
         traccar = TraccarAPI(self.env)
         for record in self:
             devices = self._get_traccar_devices()
@@ -214,6 +239,7 @@ class MaintenanceEquipment(models.Model):
                 update_data = self._get_traccar_device(traccar_device_id)
                 _update_traccar(update_data, vals)
                 if update_data:
+                    logger.info(f"updating traccar {update_data}")
                     response = traccar.put(f"api/devices/{traccar_device_id}", json=update_data)
                     if response.status_code != 200:
                         logger.error(f"Failed to update Traccar device {record.serial_no}: {response.text}")
