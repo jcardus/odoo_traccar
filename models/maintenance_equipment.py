@@ -74,7 +74,7 @@ class MaintenanceEquipment(models.Model):
 
         if devices is None:
             traccar = TraccarAPI(self.env)
-            response = traccar.get("api/devices")
+            response = traccar.get("api/devices?all=true")
             if response.status_code == 200:
                 devices = {dev['uniqueId']: dev for dev in response.json()}
                 self = self.with_context({key: devices})
