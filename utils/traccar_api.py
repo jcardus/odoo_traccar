@@ -30,5 +30,8 @@ class TraccarAPI:
     def post(self, path, json):
         return requests.post(f"{self._get_traccar_url()}/{path}", json=json, headers=self._get_headers())
 
+    def put(self, path, json):
+        return requests.put(f"{self._get_traccar_url()}/{path}", json=json, headers=self._get_headers())
+
     def delete(self, path):
         return requests.delete(f"{self._get_traccar_url()}/{path}", headers=self._get_headers())

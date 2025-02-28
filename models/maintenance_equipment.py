@@ -8,6 +8,40 @@ from ..utils.traccar_api import TraccarAPI
 
 logger = logging.getLogger(__name__)
 
+
+def _traccar_to_odoo(device):
+    return {
+        'name': device.get('name'),
+        'serial_no': device.get('uniqueId'),
+        "phone": device.get("phone"),
+        "apn": device.get("attributes").get("apn"),
+        "model": device.get("model")
+    }
+
+
+def _odoo_to_traccar(vals):
+    return {
+        "name": vals.get("name"),
+        "uniqueId": vals.get("serial_no"),
+        "phone": vals.get("phone"),
+        "attributes": {"apn": vals.get("apn")},
+        "model": vals.get("model")
+    }
+
+
+def _update_traccar(update_data, vals):
+    if 'name' in vals:
+        update_data['name'] = vals['name']
+    if 'serial_no' in vals:
+        update_data['uniqueId'] = vals['serial_no']
+    if 'phone' in vals:
+        update_data['phone'] = vals['phone']
+    if 'apn' in vals:
+        update_data['attributes']['apn'] = vals['apn']
+    if 'model' in vals:
+        update_data['model'] = vals['model']
+
+
 class MaintenanceEquipment(models.Model):
     _inherit = 'maintenance.equipment'
 
@@ -50,6 +84,21 @@ class MaintenanceEquipment(models.Model):
 
         return devices
 
+    def _get_traccar_device(self, device_id):
+        traccar = TraccarAPI(self.env)
+        response = traccar.get(f"api/devices?id={device_id}")
+
+        if response.status_code == 200:
+            devices = response.json()
+            if isinstance(devices, list) and devices:
+                return devices[0]  # Return only the first device from the list
+            else:
+                logger.warning(f"No device found in Traccar for ID: {device_id}")
+            return None
+        else:
+            logger.error(f"Failed to fetch Traccar device {device_id}: {response.text}")
+            return None
+
     def _get_traccar_positions(self):
         key = '_traccar_positions'
         positions = self.env.context.get(key)
@@ -80,6 +129,7 @@ class MaintenanceEquipment(models.Model):
 
     def _compute_longitude(self):
         return self._compute('longitude')
+
     def _compute_latitude(self):
         return self._compute('latitude')
 
@@ -94,6 +144,29 @@ class MaintenanceEquipment(models.Model):
                 if position is not None:
                     record[field] = position[field]
 
+    def _sync_traccar_devices(self):
+        devices = self._get_traccar_devices()
+        if not devices:
+            return
+
+        existing_serial_numbers = set(self.search([]).mapped('serial_no'))
+        new_devices = [
+            _traccar_to_odoo(device)
+            for key, device in devices.items()
+            if device.get('uniqueId') not in existing_serial_numbers
+        ]
+        if new_devices:
+            logger.info("Adding %d new devices to Odoo", len(new_devices))
+            super(MaintenanceEquipment, self).create(new_devices)
+
+    def create_traccar(self, vals):
+        traccar = TraccarAPI(self.env)
+        response = traccar.post("api/devices",
+                                json=_odoo_to_traccar(vals))
+
+        if response.status_code != 200:
+            raise UserError(_("Another asset already exists with this serial number!"))
+
     @api.model_create_multi
     def create(self, vals_list):
         records = super(MaintenanceEquipment, self).create(vals_list)
@@ -104,18 +177,6 @@ class MaintenanceEquipment(models.Model):
                 record.unlink()
                 raise e
         return records
-
-    def create_traccar(self, vals):
-        traccar = TraccarAPI(self.env)
-        response = traccar.post("api/devices",
-                                json={
-                                    "uniqueId": vals.get("serial_no"),
-                                    "phone": vals.get("phone"),
-                                    "name": vals.get("name"),
-                                    "attributes": {"apn": vals.get("apn")}})
-
-        if response.status_code != 200:
-            raise UserError(_("Another asset already exists with this serial number!"))
 
     def unlink(self):
         for record in self:
@@ -141,22 +202,20 @@ class MaintenanceEquipment(models.Model):
             self._sync_traccar_devices()
             request.session['sync_done'] = True  # Store flag in user session
         return super(MaintenanceEquipment, self).read(fields, load)
-    def _sync_traccar_devices(self):
-        devices = self._get_traccar_devices()
-        if not devices:
-            return
 
-        existing_serial_numbers = set(self.search([]).mapped('serial_no'))
-        new_devices = [
-            {
-                'name': device.get('name'),
-                'serial_no': device.get('uniqueId'),
-                "phone": device.get("phone"),
-                "apn": device.get("attributes").get("apn")
-            }
-            for key, device in devices.items()
-            if device.get('uniqueId') not in existing_serial_numbers
-        ]
-        if new_devices:
-            logger.info("Adding %d new devices to Odoo", len(new_devices))
-            super(MaintenanceEquipment, self).create(new_devices)
+    def write(self, vals):
+        result = super(MaintenanceEquipment, self).write(vals)
+        traccar = TraccarAPI(self.env)
+        for record in self:
+            devices = self._get_traccar_devices()
+            device = devices.get(record.serial_no)
+            if device:
+                traccar_device_id = device.get('id')
+                update_data = self._get_traccar_device(traccar_device_id)
+                _update_traccar(update_data, vals)
+                if update_data:
+                    response = traccar.put(f"api/devices/{traccar_device_id}", json=update_data)
+                    if response.status_code != 200:
+                        logger.error(f"Failed to update Traccar device {record.serial_no}: {response.text}")
+        return result
+
