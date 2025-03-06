@@ -141,7 +141,7 @@ class MaintenanceEquipment(models.Model):
 
     def _compute_status(self):
         for record in self:
-            record.last_update = False
+            record.status = ''
         devices = self._get_traccar_devices()
         for record in self:
             device = devices.get(record.serial_no)
