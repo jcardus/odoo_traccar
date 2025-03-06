@@ -32,6 +32,7 @@ def _odoo_to_traccar(vals):
         "model": vals.get("model")
     }
 
+
 def _update_traccar(update_data, vals):
     for field in SYNCED_FIELDS:
         if field in vals:
@@ -72,6 +73,11 @@ class MaintenanceEquipment(models.Model):
         compute="_compute_status",
         store=False,
         help="Device status"
+    )
+    group = fields.Char(
+        compute="_compute_group",
+        store=False,
+        help="Grupo"
     )
 
     def _get_traccar_devices(self):
@@ -121,6 +127,22 @@ class MaintenanceEquipment(models.Model):
 
         return positions
 
+    def _get_traccar_groups(self):
+        key = '_traccar_groups'
+        groups = self.env.context.get(key)
+
+        if groups is None:
+            traccar = TraccarAPI(self.env)
+            response = traccar.get("api/groups")
+            if response.status_code == 200:
+                groups = {dev['id']: dev for dev in response.json()}
+                self = self.with_context({key: groups})
+            else:
+                groups = {}
+                logger.error(f"Failed to fetch Traccar groups: {response.text}")
+
+        return groups
+
     def _compute_last_update(self):
         for record in self:
             record.last_update = False
@@ -159,6 +181,17 @@ class MaintenanceEquipment(models.Model):
                 if position is not None:
                     record[field] = position[field]
 
+    def _compute_group(self):
+        devices = self._get_traccar_devices()
+        groups = self._get_traccar_groups()
+        for record in self:
+            record.group = ''
+            device = devices.get(record.serial_no)
+            if device is not None:
+                group = groups.get(device['groupId'])
+                if group is not None:
+                    record.group = group['name']
+
     def _sync_traccar_devices(self, update_existing=False):
         devices = self._get_traccar_devices()
         if not devices:
@@ -170,7 +203,8 @@ class MaintenanceEquipment(models.Model):
             serial_no = device.get('uniqueId')
             if serial_no in existing_devices:
                 if update_existing:
-                    existing_devices[serial_no].with_context(traccar_syncing=True).write(_traccar_to_odoo(device))  # ✅ Update existing records
+                    existing_devices[serial_no].with_context(traccar_syncing=True).write(
+                        _traccar_to_odoo(device))  # ✅ Update existing records
             else:
                 new_devices.append(_traccar_to_odoo(device))  # ✅ Only collect new devices
         if new_devices:
@@ -244,4 +278,3 @@ class MaintenanceEquipment(models.Model):
                     if response.status_code != 200:
                         logger.error(f"Failed to update Traccar device {record.serial_no}: {response.text}")
         return result
-

@@ -63,7 +63,9 @@
             <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='category_id']" position="replace"/>
+                <xpath expr="//field[@name='assign_date']" position="replace"/>
                 <xpath expr="//list" position="inside">
+                    <field name="group"/>
                     <field name="model"/>
                     <field name="phone"/>
                     <field name="apn"/>
