@@ -48,12 +48,15 @@
             <field name="model">maintenance.equipment</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='owner_user_id']" position="replace">
-                    <group>
-                        <field name="last_update" readonly="1" widget="datetime" string="Last update"/>
-                        <field name="phone"/>
-                        <field name="apn"/>
-                    </group>
+                <xpath expr="//field[@name='maintenance_team_id']" position="replace"/>
+                <xpath expr="//field[@name='assign_date']" position="replace">
+                    <field name="model"/>
+                </xpath>
+                <xpath expr="//field[@name='scrap_date']" position="replace">
+                    <field name="phone"/>
+                </xpath>
+                <xpath expr="//field[@name='location']" position="replace">
+                    <field name="apn"/>
                 </xpath>
             </field>
         </record>
@@ -62,7 +65,6 @@
             <field name="model">maintenance.equipment</field>
             <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='category_id']" position="replace"/>
                 <xpath expr="//field[@name='assign_date']" position="replace"/>
                 <xpath expr="//list" position="inside">
                     <field name="group"/>
