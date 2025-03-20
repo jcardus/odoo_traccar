@@ -217,7 +217,7 @@ class MaintenanceEquipment(models.Model):
                                 json=_odoo_to_traccar(vals))
 
         if response.status_code != 200:
-            raise UserError(_("Another asset already exists with this serial number!"))
+            raise UserError(response.text)
 
     @api.model_create_multi
     def create(self, vals_list):
