@@ -11,6 +11,7 @@
     'data': [
         'data/oauth_provider_data.xml',
         'views/templates.xml',
+        'views/remove_menus.xml',
         'views/views.xml'
     ],
     'assets': {

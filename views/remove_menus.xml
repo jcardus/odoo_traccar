@@ -1,0 +1,8 @@
+<odoo>
+    <record id="maintenance.menu_m_dashboard" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="maintenance.menu_m_request" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>
