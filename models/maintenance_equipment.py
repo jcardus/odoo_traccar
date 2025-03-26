@@ -281,8 +281,10 @@ class MaintenanceEquipment(models.Model):
         return result
 
     def action_positions(self):
+        devices = self._get_traccar_devices()
+        device = devices.get(self.serial_no)
         position_model = self.env['odoo_traccar.position']
-        position_model.create_position(0)  # Call the method to create positions
+        position_model.create_position(device.get('id'))  # Call the method to create positions
 
         return {
             'type': 'ir.actions.act_window',

@@ -137,7 +137,7 @@
             <field name="model">odoo_traccar.position</field>
             <field name="arch" type="xml">
                 <list>
-                    <field name="timestamp"/>
+                    <field name="fix_time"/>
                     <field name="latitude"/>
                     <field name="longitude"/>
                     <field name="speed"/>
