@@ -12,7 +12,8 @@
         'data/oauth_provider_data.xml',
         'views/templates.xml',
         'views/remove_menus.xml',
-        'views/views.xml'
+        'views/views.xml',
+        'security/ir.model.access.csv'
     ],
     'assets': {
         'web.assets_backend': [

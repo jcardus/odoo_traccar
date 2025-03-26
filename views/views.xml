@@ -58,6 +58,13 @@
                 <xpath expr="//field[@name='location']" position="replace">
                     <field name="apn"/>
                 </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_positions"
+                            type="object"
+                            string="Positions"
+                            class="oe_highlight"
+                            icon="fa-list"/>
+                </xpath>
             </field>
         </record>
         <record id="hr_equipment_view_tree" model="ir.ui.view">
@@ -122,6 +129,19 @@
                 Track equipment and link it to an employee or department.
                 You will be able to manage allocations, issues and maintenance of your equipment.
             </p>
+            </field>
+        </record>
+
+        <record id="view_traccar_position_tree" model="ir.ui.view">
+            <field name="name">odoo_traccar.position.tree</field>
+            <field name="model">odoo_traccar.position</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="timestamp"/>
+                    <field name="latitude"/>
+                    <field name="longitude"/>
+                    <field name="speed"/>
+                </list>
             </field>
         </record>
 

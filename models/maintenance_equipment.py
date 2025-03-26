@@ -1,7 +1,8 @@
 import logging
 import re
 from datetime import datetime
-from odoo import models, fields, api, _
+
+from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.http import request
 from ..utils.traccar_api import TraccarAPI
@@ -278,3 +279,16 @@ class MaintenanceEquipment(models.Model):
                     if response.status_code != 200:
                         logger.error(f"Failed to update Traccar device {record.serial_no}: {response.text}")
         return result
+
+    def action_positions(self):
+        position_model = self.env['odoo_traccar.position']
+        position_model.create_position(0)  # Call the method to create positions
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Equipment Positions',
+            'view_mode': 'list',
+            'res_model': 'odoo_traccar.position',
+            'context': self.env.context,
+            'target': 'current',
+        }
