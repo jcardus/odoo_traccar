@@ -24,8 +24,8 @@ class TraccarAPI:
             "Content-Type": "application/json",
         }
 
-    def get(self, path):
-        return requests.get(f"{self._get_traccar_url()}/{path}", headers=self._get_headers())
+    def get(self, path, params=None):
+        return requests.get(f"{self._get_traccar_url()}/{path}", headers=self._get_headers(), params=params)
 
     def post(self, path, json):
         return requests.post(f"{self._get_traccar_url()}/{path}", json=json, headers=self._get_headers())

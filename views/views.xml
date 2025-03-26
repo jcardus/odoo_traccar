@@ -138,9 +138,8 @@
             <field name="arch" type="xml">
                 <list>
                     <field name="fix_time"/>
-                    <field name="latitude"/>
-                    <field name="longitude"/>
-                    <field name="speed"/>
+                    <field name="protocol"/>
+                    <field name="attributes"/>
                 </list>
             </field>
         </record>
